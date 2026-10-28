@@ -1,98 +1,63 @@
-▶ Company Management System
-------------------------------------------------------
-▶ Project Description
+# Company Management System — ASP.NET Core MVC
 
- A company management system that contains three main modules:
-  1. Employees: Employees can be added, updated or deleted.
-  2. Departments: New departments can be added, data updated or departments deleted.
-  3. Users: User data can be controlled and roles assigned to them, such as setting them as supervisors or regular users.
--------------------------------------------------------
-▶ Features
+An employee and department management web app built with **ASP.NET Core 8 MVC** as a **training project**.
+It covers CRUD screens, ASP.NET Core Identity with role-based access, and a layered structure
+with a Unit of Work and AutoMapper.
 
-The Company Management System offers the following key features:
+`C#` · `ASP.NET Core 8 MVC` · `Razor` · `EF Core` · `SQL Server` · `ASP.NET Core Identity` · `AutoMapper`
 
-1-Employee Management
+---
 
- - Add new employees.
- - Edit employee details.
- - Delete employees.
-   
-2-Department Management
+## Features
 
- - Add new departments.
- - Update department details.
- - Remove departments.
-   
-3-User Management
+- **Departments** — list, create, view, update, delete
+- **Employees** — list with search by name, and create with a profile image upload and a department
+- **Accounts** — sign up, log in, log out, forgot / reset password by email
+- **Users** *(Admin only)* — list with search, view, update, delete
+- **Roles** *(Admin only)* — create, update, delete roles, and add or remove users from a role
+- All pages require a logged-in user; users and roles are restricted to the `Admin` role
 
- - Add new users with specific roles.
- - Update user details and assign roles.
- - Delete users from the system.
-  
-4-Role-Based Access Control (RBAC)
+---
 
- - Admin users can manage all system data.
- - Restrict or allow features based on user roles.
-  
-5-Data Management
+## Architecture
 
- - Complete CRUD (Create, Read, Update, Delete) operations for all entities.
-   
-6-Authentication and Authorization
+```
+Company.Web         → MVC controllers, views, view models, Identity setup
+Company.Service     → services for employees and departments, DTOs, AutoMapper profiles, file upload and email helpers
+Company.Repository  → generic repository and Unit of Work over EF Core
+Company.Data        → entities (Employee, Department, ApplicationUser), DbContext, migrations
+```
 
- - User login/logout with secure identity management.
- - Role-based authorization using ASP.NET Identity.
-  
-7-Separation of Concerns
+---
 
- - Utilizes the Unit of Work pattern to organize database operations.
+## Running locally
 
-8-Efficiency with Modern Tools
+**Prerequisites:** .NET 8 SDK and SQL Server (or LocalDB).
 
- - AutoMapper for seamless data mapping between entities and DTOs.
- - LINQ for efficient database querying.
-   
-9-Database Management
+```bash
+git clone https://github.com/mohamed-wael15/MVC-CompanyAPP.git
+cd MVC-CompanyAPP
+```
 
- - Database design supports scalability and integrity.
- - Built using SQL Server and managed with Entity Framework.
-----------------------------------------------------------------
-▶ Technologies used
-- ASP.NET MVC: To build the backend.
-- C#: The basic programming language.
-- SQL Server: The database used to store data.
-- Entity Framework (EF) to manage the database.
-- LINQ: To query data efficiently.
+1. Check the `DefaultConnection` string in `Company.Web/appsettings.json`. It uses a local SQL Server instance with Windows authentication.
+2. Create the database:
 
-● Other Technologies used
-- Unit of Work: To manage processes in an organized manner.
-- DTO (Data Transfer Objects): To transfer data between project layers.
-- AutoMapper: To facilitate data transformation between entities and DTO.
-- Identity: To manage users and permissions.
--------------------------------------------------
-▶ Setup Instructions
+   ```bash
+   dotnet ef database update --project Company.Data --startup-project Company.Web
+   ```
 
-1-Clone the Repository
+   or `Update-Database` from the Package Manager Console in Visual Studio.
+3. Run the app:
 
- Clone the project to your local machine:
- 
-    git clone https://github.com/mohamed-wael15/MVC-CompanyAPP.git
+   ```bash
+   dotnet run --project Company.Web
+   ```
 
- 2-Database Setup:
- 
-   - Make sure you have SQL Server installed.
-     
-   - Update the database connection settings in the appsettings.json file.   
+---
 
- 3-Migrations application
- 
-   - Use the following command to create the database:
-     
-         Update-Database
+## Notes
 
- 4-Project operation:
- 
-   - Run the project through Visual Studio.
-
-
-  
+- This is a learning project and has no automated tests.
+- Employee details, update and delete exist in the service layer but have no screens yet.
+- The password-reset email needs SMTP settings. They are left empty in `Company.Service/Helper/EmailSettings.cs`, so that feature will not send emails until they are filled in.
+- The admin pages require a user in the `Admin` role, which is not seeded. Assign it to a user in the database first.
